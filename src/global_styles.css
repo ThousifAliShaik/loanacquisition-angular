@@ -1,0 +1,406 @@
+/* Import Bootstrap and Bootstrap Icons */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+  --primary-color: #0033A0;  /* FreddieMac primary blue */
+  --secondary-color: #6C757D;
+  --success-color: #28A745;
+  --danger-color: #DC3545;
+  --warning-color: #FFC107;
+  --info-color: #17A2B8;
+  --light-color: #F8F9FA;
+  --dark-color: #343A40;
+}
+
+
+/* Global Styles for Login Page */
+body {
+  background: #f4f6f9; /* Light background */
+  font-family: 'Arial', sans-serif;
+  color: #2c3e50;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container for the login form */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 0 15px; /* Prevent any unwanted padding/margin on sides */
+  box-sizing: border-box; /* Make sure the padding doesn't affect the overall width */
+}
+
+/* Login Form Styles */
+.login-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 400px; /* Maximum width for the form */
+  margin: 0 auto; /* Center the form in the container */
+}
+
+/* Card Body */
+.login-card-body {
+  padding: 20px;
+}
+
+/* Title */
+.login-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary-color); /* Using custom primary color */
+  margin-bottom: 20px;
+}
+
+/* Form Label */
+.login-form-label {
+  font-weight: 500;
+  color: var(--dark-color);
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Input Fields */
+.login-form-control {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Focus effect on inputs */
+.login-form-control:focus {
+  border-color: var(--primary-color); /* Focus border color */
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Blue glow */
+  outline: none;
+}
+
+/* Submit Button */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color); /* Primary color */
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #9b59b6; /* Purple on hover */
+  transform: scale(1.05); /* Slight scale effect */
+}
+
+.login-btn:active {
+  background-color: #2980b9; /* Darker blue on click */
+}
+
+/* Error Message */
+.alert {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+/* Register link */
+.login-register-link a {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.login-register-link a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-card {
+    padding: 20px;
+    max-width: 90%; /* Allow form to scale on smaller screens */
+  }
+  .login-title {
+    font-size: 1.8rem;
+  }
+  .login-btn {
+    padding: 10px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-card {
+    max-width: 100%; /* Allow full-width on very small screens */
+  }
+  .login-title {
+    font-size: 1.6rem;
+  }
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #002880;
+  border-color: #002880;
+}
+
+/* Navbar Styles */
+.navbar {
+  background: linear-gradient(45deg, #3498db, #9b59b6); /* Trendy gradient background */
+  padding: 10px 20px;
+  border-radius: 8px; /* Rounded corners for a modern look */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: #f39c12; /* Color change on hover */
+}
+
+.navbar .btn-outline-light {
+  color: #fff;
+  border-color: #fff;
+  padding: 8px 15px;
+  font-weight: 600;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.navbar .btn-outline-light:hover {
+  background-color: #fff;
+  color: #3498db; /* Light background with primary color text */
+  transform: scale(1.05); /* Slight scale effect on hover */
+}
+
+.navbar .navbar-toggler-icon {
+  background-color: #fff;
+}
+
+/* Notification Icon */
+.app-notification-dropdown {
+  font-size: 1.5rem;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.app-notification-dropdown:hover {
+  transform: scale(1.1); /* Slightly enlarge the icon on hover */
+}
+
+/* Add responsiveness for smaller screens */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px;
+  }
+  .navbar-brand {
+    font-size: 1.5rem;
+  }
+  .navbar .btn-outline-light {
+    padding: 8px 12px;
+  }
+}
+
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  padding: 3px 6px;
+  border-radius: 50%;
+  background-color: var(--danger-color);
+  color: white;
+  font-size: 0.75rem;
+}
+
+.notification-popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  opacity: 0.9;
+  z-index: 1000;
+  transition: opacity 0.5s ease;
+}
+.success-popup {
+  background-color: green;
+}
+.error-popup {
+  background-color: red;
+}
+
+/* Side Menu Styles */
+.list-group {
+  background-color: #2c3e50; /* Dark background for the sidebar */
+  padding: 10px 0;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.list-group-item {
+  border: none; /* Remove borders between items */
+  background-color: transparent; /* Transparent background for individual items */
+  color: #ecf0f1; /* Light text color */
+  font-weight: 500;
+  padding: 15px 25px; /* Add padding for better spacing */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  border-radius: 8px; /* Rounded corners for each item */
+}
+
+.list-group-item:hover {
+  background-color: #2980b9; /* Highlighted background on hover */
+  color: #fff; /* Text color change on hover */
+  transform: translateX(5px); /* Slight movement to the right on hover */
+}
+
+.list-group-item.active {
+  background-color: #3498db; /* Active item color */
+  color: #fff; /* Active text color */
+  font-weight: 600; /* Bold active item text */
+}
+
+.list-group-item i {
+  font-size: 1.4rem; /* Icon size */
+  margin-right: 15px; /* Space between icon and label */
+  transition: transform 0.3s ease;
+}
+
+.list-group-item:hover i {
+  transform: scale(1.2); /* Scale the icon on hover */
+}
+
+/* Highlighted sections with different background colors */
+.list-group-item:nth-child(1) {
+  background-color: #16a085; /* Emerald green for the first item */
+}
+.list-group-item:nth-child(2) {
+  background-color: #f39c12; /* Bright yellow for the second item */
+}
+.list-group-item:nth-child(3) {
+  background-color: #e74c3c; /* Red for the third item */
+}
+.list-group-item:nth-child(4) {
+  background-color: #9b59b6; /* Purple for the fourth item */
+}
+
+/* Active item color overrides for specific menu items */
+.list-group-item.active:nth-child(1) {
+  background-color: #1abc9c; /* Lighter emerald green for active item */
+}
+.list-group-item.active:nth-child(2) {
+  background-color: #f1c40f; /* Lighter yellow for active item */
+}
+.list-group-item.active:nth-child(3) {
+  background-color: #c0392b; /* Darker red for active item */
+}
+.list-group-item.active:nth-child(4) {
+  background-color: #8e44ad; /* Darker purple for active item */
+}
+
+/* Add some padding to the list container */
+.list-group {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.dashboard-tile {
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 200px; /* Set a fixed minimum height for consistency */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertically center the content */
+}
+
+.dashboard-tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-tile .card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.dashboard-tile i {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.dashboard-tile h5 {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.dashboard-tile p {
+  font-size: 1.5rem;
+  font-weight: 500;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflowing text */
+  text-overflow: ellipsis; /* Add ellipsis (...) for overflow text */
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.dashboard-tile .card-body {
+  height: 100%; /* Ensure the content is stretched evenly within the tile */
+}
+
+@media (max-width: 768px) {
+  .list-group {
+    padding-left: 10px; /* Adjust padding for smaller screens */
+    padding-right: 10px;
+  }
+  .dashboard-tile {
+    min-height: 180px; /* Smaller height for smaller screens */
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-tile {
+    min-height: 150px; /* Even smaller for extra small screens */
+  }
+}
+
+/* Customize the toggle button color */
+.form-check-input:checked {
+  background-color: blue;
+  border-color: blue;
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
