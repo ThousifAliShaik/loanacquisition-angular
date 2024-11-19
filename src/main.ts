@@ -71,14 +71,27 @@ const routes: Routes = [
   {
     path: 'applications/:id',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-detail.component').then(m => m.LoanDetailComponent),
-    canActivate: [AuthGuard]
+      import('./app/features/loan/components/loan-detail.component').then(m => m.LoanDetailComponent)
   },
   {
-    path: 'applications/:id/review',
+    path: 'applications/:id/edit',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-review.component').then(m => m.LoanReviewComponent),
-    canActivate: [AuthGuard]
+      import('./app/features/loan/components/loan-edit.component').then(m => m.EditLoanComponent)
+  },
+  {
+    path: 'review/applications',
+    loadComponent: () =>
+      import('./app/features/loan/components/loan-review-list.component').then(m => m.LoanReviewListComponent)
+  },
+  {
+    path: 'applications/:id/final-review',
+    loadComponent: () =>
+      import('./app/features/loan/components/loan-final-review.component').then(m => m.LoanFinalReviewComponent)
+  },
+  {
+    path: 'review/applications/:id',
+    loadComponent: () =>
+      import('./app/features/loan/components/loan-review.component').then(m => m.LoanReviewComponent)
   },
   {
     path: '**',

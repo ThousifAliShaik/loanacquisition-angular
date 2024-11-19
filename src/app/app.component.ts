@@ -183,7 +183,8 @@ export class AppComponent implements OnInit {
       case UserRole.LOAN_OFFICER:
         this.menuItems = [
           { label: 'Dashboard', route: '/', icon: 'bi bi-speedometer2' },
-          { label: 'Applications', route: 'applications', icon: 'bi bi-clipboard-check'}
+          { label: 'Applications', route: 'applications', icon: 'bi bi-clipboard-check'},
+          { label: 'Review Applications', route: 'review/applications', icon: 'bi bi-file-earmark-check'}
           // Add other user-specific menu items
         ];
         break;

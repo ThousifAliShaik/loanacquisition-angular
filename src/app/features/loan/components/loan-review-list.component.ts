@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { LoanService } from '../services/loan.service';
-import { LoanApplication, LoanApplicationDTO } from '../../../core/models/loan-application.model';
+import { LoanApplicationDTO } from '../../../core/models/loan-application.model';
+import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-loan-list',
@@ -11,10 +12,8 @@ import { LoanApplication, LoanApplicationDTO } from '../../../core/models/loan-a
   template: `
     <div class="container-fluid">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Loan Applications</h2>
-        <button class="btn btn-primary" routerLink="/applications/new">
-          <i class="bi bi-plus"></i> New Application
-        </button>
+        <h2>Review Loan Applications</h2>
+        
       </div>
 
       <div class="card">
@@ -31,6 +30,12 @@ import { LoanApplication, LoanApplicationDTO } from '../../../core/models/loan-a
                 </tr>
               </thead>
               <tbody>
+                <!-- Check if there are no records -->
+                <tr *ngIf="pagedApplications.length === 0">
+                  <td colspan="5" class="text-center">No records available</td>
+                </tr>
+                
+                <!-- Render records if available -->
                 <tr *ngFor="let application of pagedApplications">
                   <td>{{ application.loanId }}</td>
                   <td>{{ application.loanAmount | currency }}</td>
@@ -41,13 +46,8 @@ import { LoanApplication, LoanApplicationDTO } from '../../../core/models/loan-a
                   </td>
                   <td>{{ application.createdAt | date }}</td>
                   <td>
-                    <button class="btn btn-sm btn-primary me-2" 
-                            [routerLink]="['/applications', application.loanId]">
-                      View
-                    </button>
-                    <button class="btn btn-sm btn-secondary" 
-                            [routerLink]="['/applications', application.loanId, 'edit']">
-                      Edit
+                    <button class="btn btn-sm btn-primary me-2" (click)="reviewLoan(application)">
+                      Review
                     </button>
                   </td>
                 </tr>
@@ -70,26 +70,41 @@ import { LoanApplication, LoanApplicationDTO } from '../../../core/models/loan-a
     </div>
   `
 })
-export class LoanListComponent implements OnInit {
+export class LoanReviewListComponent implements OnInit {
+  currentUser: User| null = null;
   applications: LoanApplicationDTO[] = [];
   pagedApplications: LoanApplicationDTO[] = [];  // Applications for the current page
   currentPage: number = 1;  // Current page number
   itemsPerPage: number = 10;  // Items to display per page
   totalPages: number = 1;  // Total number of pages
 
-  constructor(private loanService: LoanService) {}
+  constructor(private loanService: LoanService, private router: Router) {}
 
   ngOnInit() {
+    this.currentUser = this.getUserFromLocalStorage();
     this.loadApplications();
   }
 
-  loadApplications() {
-    this.loanService.getApplications().subscribe(applications => {
-      this.applications = applications;
-      this.totalPages = Math.ceil(this.applications.length / this.itemsPerPage);
-      this.updatePagedApplications();
-    });
+  private getUserFromLocalStorage(): User | null {
+    const currentUser = localStorage.getItem('currentUser');
+    return currentUser ? JSON.parse(currentUser) : null;
   }
+  
+  loadApplications() {
+    if(this.currentUser?.role === 'LOAN_OFFICER') {
+      this.loanService.getApplicationsForPendingFinalApproval().subscribe(applications => {
+        this.applications = applications;
+        this.totalPages = Math.ceil(this.applications.length / this.itemsPerPage);
+        this.updatePagedApplications();
+      });
+    }
+    
+  }
+
+  reviewLoan(application: LoanApplicationDTO) {
+    this.router.navigate([`/applications/${application.loanId}/final-review`]);
+  }
+  
 
   updatePagedApplications() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;

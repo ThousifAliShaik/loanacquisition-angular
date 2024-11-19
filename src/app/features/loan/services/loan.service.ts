@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { LoanApplication, LoanApplicationDTO, LoanStatus } from '../../../core/models/loan-application.model';
-import { HttpClient } from '@angular/common/http';
+import { LoanApplication, LoanApplicationDTO, LoanApplicationExtendedDTO, LoanStatus } from '../../../core/models/loan-application.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LenderDTO } from './lender.service';
+import { ApiResponse } from '../../../core/models/auth.model';
 
 export interface UserDTO {
   userId: string;
@@ -70,6 +71,13 @@ export class LoanService {
     return this.http.post<LoanApplicationDTO>(`${this.loanOfficerBaseUrl}/new_application`, newApplication);
   }
   
+  editLoanApplication(application: LoanApplicationDTO): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.loanOfficerBaseUrl}/edit_application`, application);
+  }
+
+  getLoanApplication(loanId: string): Observable<LoanApplicationDTO> {
+    return this.http.get<LoanApplicationDTO>(`${this.loanOfficerBaseUrl}/loan_application/${loanId}`);
+  }
 
   updateApplication(id: string, updates: Partial<LoanApplication>): Observable<LoanApplication> {
     const index = this.mockApplications.findIndex(app => app.id === id);
@@ -102,5 +110,31 @@ export class LoanService {
 
   getAllSeniorManagers(): Observable<UserDTO[]> {
     return this.http.get<UserDTO[]>(`${this.loanApplicationBaseUrl}/all_senior_managers`);
+  }
+
+  getLoanApplicationExtended(loanId: string): Observable<LoanApplicationExtendedDTO> {
+    return this.http.get<LoanApplicationExtendedDTO>(`${this.loanOfficerBaseUrl}/loan_application_extended/${loanId}`);
+  }
+
+  getApplicationsForPendingFinalApproval(): Observable<LoanApplicationDTO[]> {
+    return this.http.get<LoanApplicationDTO[]>(`${this.loanOfficerBaseUrl}/pending_final_approval_applications`);
+  }
+
+  finalApproveLoanApplication(loanId: string): Observable<ApiResponse> {
+    const body = {};
+    return this.http.put<ApiResponse>(`${this.loanOfficerBaseUrl}/loan_application/${loanId}/final_approval/approve`, body);
+  }
+  
+  finalRejectLoanApplication(loanId: string): Observable<ApiResponse> {
+    const body = {};
+    return this.http.put<ApiResponse>(`${this.loanOfficerBaseUrl}/loan_application/${loanId}final_approval/reject`, body);
+  }
+
+  generateLoanReport(loanId: string): Observable<Blob> {
+    const url = `${this.loanOfficerBaseUrl}/loan_application/${loanId}/generate_report`;
+    const headers = new HttpHeaders({
+      'Accept': 'application/pdf'
+    });
+    return this.http.get<Blob>(url, { headers, responseType: 'blob' as 'json' });
   }
 }

@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoanService } from '../services/loan.service';
 import { LoanApplicationExtendedDTO, LoanApplicationDTO, LoanApprovalDTO, UnderwriterAssessmentDTO, RiskAssessmentDTO, ComplianceAssessmentDTO } from '../../../core/models/loan-application.model';
+import { ApiResponse } from '../../../core/models/auth.model';
 
 @Component({
-  selector: 'app-loan-detail',
+  selector: 'app-loan-detail-final-review',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -33,6 +34,8 @@ import { LoanApplicationExtendedDTO, LoanApplicationDTO, LoanApprovalDTO, Underw
               <p><strong>Last Updated:</strong> {{ application.loanApplication.updatedAt | date }}</p>
             </div>
           </div>
+
+          
 
           <!-- Loan Approvals Section -->
           <div class="card mb-3">
@@ -75,7 +78,6 @@ import { LoanApplicationExtendedDTO, LoanApplicationDTO, LoanApprovalDTO, Underw
               </p>
               <p><strong>Remarks:</strong> {{ application.underwriterAssessment?.remarks || 'N/A' }}</p>
               <p><strong>Assessment Date:</strong> {{ application.underwriterAssessment?.assessmentDate | date:'short' }}</p>
-
             </div>
           </div>
 
@@ -93,7 +95,7 @@ import { LoanApplicationExtendedDTO, LoanApplicationDTO, LoanApprovalDTO, Underw
                 </span>
               </p>
               <p><strong>Remarks:</strong> {{ application.riskAssessment?.remarks || 'N/A' }}</p>
-              <p><strong>Assessment Date:</strong> {{ application.riskAssessment?.assessmentDate | date:'short' || 'N/A'}}</p>
+              <p><strong>Assessment Date:</strong> {{ application.riskAssessment?.assessmentDate | date:'short' || 'N/A' }}</p>
             </div>
           </div>
 
@@ -112,9 +114,41 @@ import { LoanApplicationExtendedDTO, LoanApplicationDTO, LoanApprovalDTO, Underw
               <p><strong>Assessment Date:</strong> {{ application.complianceAssessment?.assessmentDate | date:'short' }}</p>
             </div>
           </div>
+          
+          <!-- Final Approval Section -->
+          <div *ngIf="finalApprovalStatus" class="card mb-3">
+            <div class="card-header">
+              <h5>Final Approval</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Final Approval Status:</strong>
+                <span [class]="'badge ' + getStatusClass(finalApprovalStatus)">
+                  {{ finalApprovalStatus || 'N/A' }}
+                </span>
+              </p>
+            </div>
+          </div>
 
-          <div class="text-center mt-4">
-            <button class="btn btn-primary" (click)="goBack()">
+          <div *ngIf="finalApprovalStatus === null" class="text-center mt-4">
+            <!-- Approve Button -->
+            <button class="btn btn-success me-3" (click)="approveLoan(application.loanApplication.loanId || '')">
+                Approve
+            </button>
+            
+            <!-- Reject Button -->
+            <button class="btn btn-danger" (click)="rejectLoan(application.loanApplication.loanId || '')">
+                Reject
+            </button>
+          </div>
+
+          <div *ngIf="finalApprovalStatus" class="text-center mt-4">
+            <button class="btn btn-primary" (click)="generateReport(application.loanApplication?.loanId || '')">
+              Generate Report
+            </button>
+          </div>
+
+          <div *ngIf="finalApprovalStatus" class="text-center mt-4">
+            <button class="btn btn-secondary" (click)="goBack()">
               Back to List
             </button>
           </div>
@@ -124,8 +158,9 @@ import { LoanApplicationExtendedDTO, LoanApplicationDTO, LoanApprovalDTO, Underw
     </div>
   `
 })
-export class LoanDetailComponent implements OnInit {
+export class LoanFinalReviewComponent implements OnInit {
   application: LoanApplicationExtendedDTO | null = null;
+  finalApprovalStatus: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -134,6 +169,7 @@ export class LoanDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadApplication(id);
@@ -141,7 +177,7 @@ export class LoanDetailComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/applications']);
+    this.router.navigate(['review/applications']);
   }
 
   loadApplication(id: string) {
@@ -151,6 +187,7 @@ export class LoanDetailComponent implements OnInit {
           this.application = application;
           console.log(application);
         } else {
+            
           this.router.navigate(['/applications']);
         }
       },
@@ -159,6 +196,62 @@ export class LoanDetailComponent implements OnInit {
         this.router.navigate(['/applications']);
       }
     });
+  }
+
+  rejectLoan(id: string) {
+    this.loanService.finalRejectLoanApplication(id).subscribe({
+      next: (response: ApiResponse) => {
+        if(response.success) {
+            this.finalApprovalStatus = 'REJECTED';
+            console.log('Loan rejected:', response);
+            alert('Loan has been rejected.');
+        }
+      },
+      error: (err) => {
+        console.error('Rejection failed:', err);
+        alert('Error rejecting the loan.');
+      }
+    });
+  }
+
+  approveLoan(id: string) {
+    this.loanService.finalApproveLoanApplication(id).subscribe({
+      next: (response: ApiResponse) => {
+        if(response.success) {
+            this.finalApprovalStatus = 'APPROVED';
+            console.log('Loan approved:', response);
+            alert('Loan has been approved successfully!');
+        }
+      },
+      error: (err) => {
+        console.error('Approval failed:', err);
+        alert('Error approving the loan.');
+      }
+    });
+  }
+
+  generateReport(loanId: string) {
+    if (loanId) {
+        this.loanService.generateLoanReport(loanId).subscribe({
+          next: (response) => {
+            
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Loan_Acquisition_Report_${loanId}.pdf`; 
+            a.click();  
+            
+            window.URL.revokeObjectURL(url);
+          },
+          error: (error) => {
+            console.error('Error downloading report:', error);
+            alert('Error generating loan acquisition report');
+          }
+        });
+      }
   }
 
   getStatusClass(status: string | undefined): string {

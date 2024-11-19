@@ -34,6 +34,52 @@ export interface LoanApplicationDTO {
   seniorManagerId: string;
 }
 
+export interface LoanApprovalDTO {
+  approvalId: string;
+  approverId: string;
+  loanId: string;
+  approverName: string;
+  approverRoleName: string;
+  approvalLevel: number;
+  approvalStatus: string;
+  remarks: string;
+  approvalDate: string;
+  SLA: string;
+}
+
+export interface UnderwriterAssessmentDTO {
+  underwriterAssessmentId: string;
+  loanToValueRatio: number;
+  incomeVerificationStatus: string;
+  assessmentOutcome: string;
+  remarks: string;
+  assessmentDate: string;
+}
+
+export interface RiskAssessmentDTO {
+  assessmentId: string;
+  debtToIncomeRatio: number;
+  creditScore: number;
+  riskCategory: string;
+  remarks: string;
+  assessmentDate: string;
+}
+
+export interface ComplianceAssessmentDTO {
+  complianceId: string;
+  complianceStatus: string;
+  remarks: string;
+  assessmentDate: string;
+}
+
+export interface LoanApplicationExtendedDTO {
+  loanApplication: LoanApplicationDTO;
+  loanApprovals: LoanApprovalDTO[];
+  underwriterAssessment: UnderwriterAssessmentDTO;
+  riskAssessment: RiskAssessmentDTO;
+  complianceAssessment: ComplianceAssessmentDTO;
+}
+
 export interface Document {
   id: string;
   name: string;
