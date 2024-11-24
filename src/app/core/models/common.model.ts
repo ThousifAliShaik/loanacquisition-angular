@@ -12,3 +12,12 @@ export interface LoanOfficerDashboardMetrics {
     applicationsRejected: number,
     applicationsPendingFinalApproval: number
 }
+
+export interface DashboardMetrics {
+    totalApplications: number,
+    applicationsUnderReview: number,
+    applicationsApproved: number,
+    applicationsRejected: number,
+    applicationsPendingFinalApproval: number,
+    applicationsPendingUserAction: number
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../services/dashboard.service';
+import { UserRole } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-dashboard-metrics',
@@ -58,17 +59,43 @@ import { DashboardService } from '../services/dashboard.service';
 })
 export class DashboardMetricsComponent implements OnInit {
   metrics: any[] = [];
-
+  userRole!: UserRole;
+  
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit() {
-    this.dashboardService.getDashboardMetrics().subscribe(
-      metrics => {
-        this.metrics = metrics;
-      },
-      error => {
-        console.error('Error fetching metrics:', error);
-      }
-    );
+    this.loadDashboardMetrics();
+  }
+
+  private loadDashboardMetrics() {
+    this.userRole = this.getUserRoleFromLocalStorage();
+    if (this.userRole === UserRole.LOAN_OFFICER) {
+      this.dashboardService.getDashboardMetricsForLoanOfficer().subscribe(
+        metrics => {
+          this.metrics = metrics;
+        },
+        error => {
+          console.error('Error fetching metrics:', error);
+        }
+      );
+    } else {
+      this.dashboardService.getDashboardMetrics().subscribe(
+        metrics => {
+          this.metrics = metrics;
+        },
+        error => {
+          console.error('Error fetching metrics:', error);
+        }
+      );
+    }
+  }
+
+  private getUserRoleFromLocalStorage(): UserRole {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      const user = JSON.parse(currentUser);
+      return user.role;
+    }
+    return UserRole.LOAN_OFFICER;
   }
 }

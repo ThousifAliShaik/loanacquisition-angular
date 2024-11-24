@@ -59,34 +59,59 @@ const routes: Routes = [
   {
     path: 'applications',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-list.component').then(m => m.LoanListComponent),
+      import('./app/features/loan/components/common/loan-list.component').then(m => m.LoanListComponent),
     canActivate: [AuthGuard]
   },
   {
     path: 'applications/new',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-form.component').then(m => m.LoanFormComponent),
+      import('./app/features/loan/components/loan-officer/loan-form.component').then(m => m.LoanFormComponent),
     canActivate: [AuthGuard]
   },
   {
     path: 'applications/:id',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-detail.component').then(m => m.LoanDetailComponent)
+      import('./app/features/loan/components/common/loan-detail.component').then(m => m.LoanDetailComponent)
   },
   {
     path: 'applications/:id/edit',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-edit.component').then(m => m.EditLoanComponent)
+      import('./app/features/loan/components/loan-officer/loan-edit.component').then(m => m.EditLoanComponent)
   },
   {
     path: 'review/applications',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-review-list.component').then(m => m.LoanReviewListComponent)
+      import('./app/features/loan/components/common/loan-review-list.component').then(m => m.LoanReviewListComponent)
   },
   {
     path: 'applications/:id/final-review',
     loadComponent: () =>
-      import('./app/features/loan/components/loan-final-review.component').then(m => m.LoanFinalReviewComponent)
+      import('./app/features/loan/components/loan-officer/loan-final-review.component').then(m => m.LoanFinalReviewComponent)
+  },
+  {
+    path: 'applications/:id/underwriter-assessment',
+    loadComponent: () =>
+      import('./app/features/loan/components/underwriter/loan-underwriter-assessment.component').then(m => m.LoanUnderwriterAssessmentComponent)
+  },
+  {
+    path: 'applications/:id/risk-assessment',
+    loadComponent: () =>
+      import('./app/features/loan/components/risk-analyst/loan-risk-analyst-assessment.component').then(m => m.LoanRiskAnalystAssessmentComponent)
+  },
+  {
+    path: 'applications/:id/compliance-assessment',
+    loadComponent: () =>
+      import('./app/features/loan/components/compliance-officer/loan-compliance-officer-assessment.component').then(m => m.LoanComplianceOfficerAssessmentComponent)
+  },
+  {
+    path: 'applications/:id/manager-assessment',
+    loadComponent: () =>
+      import('./app/features/loan/components/manager/loan-manager-assessment.component').then(m => m.LoanManagerAssessmentComponent)
+  },
+  {
+    path: 'applications/:id/senior-manager-assessment',
+    loadComponent: () =>
+      import('./app/features/loan/components/senior-manager/loan-senior-manager-assessment.component').then(m => m.LoanSeniorManagerAssessmentComponent)
   },
   {
     path: 'review/applications/:id',

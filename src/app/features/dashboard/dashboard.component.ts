@@ -36,7 +36,7 @@ import { LoanService } from '../loan/services/loan.service';
           </div>
           
           <!-- Loan Officer Dashboard View -->
-          <div *ngIf="userRole === userRoles.LOAN_OFFICER">
+          <div *ngIf="userRole !== userRoles.ADMIN">
             <app-dashboard-metrics></app-dashboard-metrics>
             
             <!-- Recent Applications Table -->
@@ -50,8 +50,9 @@ import { LoanService } from '../loan/services/loan.service';
                     <thead>
                       <tr>
                         <th>ID</th>
+                        <th>Amount</th>
                         <th>Status</th>
-                        <th>Assigned To</th>
+                        <th>Create Date</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -70,7 +71,7 @@ import { LoanService } from '../loan/services/loan.service';
                                   [routerLink]="['/applications', application.loanId]">
                             View
                           </button>
-                          <button class="btn btn-sm btn-secondary" 
+                          <button *ngIf="userRole === 'LOAN_OFFICER'" class="btn btn-sm btn-secondary" 
                                   [routerLink]="['/applications', application.loanId, 'edit']">
                             Edit
                           </button>
@@ -110,7 +111,7 @@ export class DashboardComponent implements OnInit {
     if (this.userRole === UserRole.ADMIN) {
       this.loadAdminMetrics();
     }
-    if (this.userRole === UserRole.LOAN_OFFICER) {
+    if (this.userRole !== UserRole.ADMIN) {
       this.loadRecentApplications();
     }
   }

@@ -49,6 +49,7 @@ export interface LoanApprovalDTO {
 
 export interface UnderwriterAssessmentDTO {
   underwriterAssessmentId: string;
+  loanId: string;
   loanToValueRatio: number;
   incomeVerificationStatus: string;
   assessmentOutcome: string;
@@ -58,6 +59,7 @@ export interface UnderwriterAssessmentDTO {
 
 export interface RiskAssessmentDTO {
   assessmentId: string;
+  loanId: string;
   debtToIncomeRatio: number;
   creditScore: number;
   riskCategory: string;
@@ -67,6 +69,7 @@ export interface RiskAssessmentDTO {
 
 export interface ComplianceAssessmentDTO {
   complianceId: string;
+  loanId: string;
   complianceStatus: string;
   remarks: string;
   assessmentDate: string;

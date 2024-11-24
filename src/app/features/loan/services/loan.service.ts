@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { LoanApplication, LoanApplicationDTO, LoanApplicationExtendedDTO, LoanStatus } from '../../../core/models/loan-application.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LenderDTO } from './lender.service';
 import { ApiResponse } from '../../../core/models/auth.model';
+import { User } from '../../../core/models/user.model';
 
 export interface UserDTO {
   userId: string;
@@ -18,13 +19,19 @@ export interface UserDTO {
 @Injectable({
   providedIn: 'root'
 })
-export class LoanService {
+export class LoanService implements OnInit{
   
   private loanOfficerBaseUrl = 'http://localhost:8080/api/loan-officer';
 
-  private loanApplicationBaseUrl = 'http://localhost:8080/api/loan_application'
+  private loanApplicationBaseUrl = 'http://localhost:8080/api/loan_application';
+
+  currentUser: User| null = null;
 
   constructor(private http: HttpClient) {}
+  
+  ngOnInit(): void {
+    this.currentUser = this.getUserFromLocalStorage();  
+  }
   
   private mockApplications: LoanApplication[] = [
     {
@@ -42,12 +49,17 @@ export class LoanService {
     }
   ];
 
+  private getUserFromLocalStorage(): User | null {
+    const currentUser = localStorage.getItem('currentUser');
+    return currentUser ? JSON.parse(currentUser) : null;
+  }
+
   getApplications(): Observable<LoanApplicationDTO[]> {
-    return this.http.get<LoanApplicationDTO[]>(`${this.loanOfficerBaseUrl}/all_applications`);
+    return this.http.get<LoanApplicationDTO[]>(`${this.loanApplicationBaseUrl}/all_applications`);
   }
 
   getRecentApplications(): Observable<LoanApplicationDTO[]> {
-    return this.http.get<LoanApplicationDTO[]>(`${this.loanOfficerBaseUrl}/recent_applications`);
+    return this.http.get<LoanApplicationDTO[]>(`${this.loanApplicationBaseUrl}/recent_applications`);
   }
 
   getApplicationById(id: string): Observable<LoanApplication | undefined> {
@@ -113,7 +125,7 @@ export class LoanService {
   }
 
   getLoanApplicationExtended(loanId: string): Observable<LoanApplicationExtendedDTO> {
-    return this.http.get<LoanApplicationExtendedDTO>(`${this.loanOfficerBaseUrl}/loan_application_extended/${loanId}`);
+    return this.http.get<LoanApplicationExtendedDTO>(`${this.loanApplicationBaseUrl}/loan_application_extended/${loanId}`);
   }
 
   getApplicationsForPendingFinalApproval(): Observable<LoanApplicationDTO[]> {
@@ -136,5 +148,9 @@ export class LoanService {
       'Accept': 'application/pdf'
     });
     return this.http.get<Blob>(url, { headers, responseType: 'blob' as 'json' });
+  }
+
+  getApplicationsForPendingAssessment(): Observable<LoanApplicationDTO[]> {
+    return this.http.get<LoanApplicationDTO[]>(`${this.loanApplicationBaseUrl}/pending_assessment`);
   }
 }
