@@ -97,6 +97,18 @@ export class LoanReviewListComponent implements OnInit {
         this.totalPages = Math.ceil(this.applications.length / this.itemsPerPage);
         this.updatePagedApplications();
       });
+    } else if(this.currentUser?.role === 'MANAGER') {
+      this.loanService.getApplicationsForPendingManagerAssessment().subscribe(applications => {
+        this.applications = applications;
+        this.totalPages = Math.ceil(this.applications.length / this.itemsPerPage);
+        this.updatePagedApplications();
+      });
+    } else if(this.currentUser?.role === 'SENIOR_MANAGER') {
+      this.loanService.getApplicationsForPendingSeniorManagerAssessment().subscribe(applications => {
+        this.applications = applications;
+        this.totalPages = Math.ceil(this.applications.length / this.itemsPerPage);
+        this.updatePagedApplications();
+      });
     } else {
       this.loanService.getApplicationsForPendingAssessment().subscribe(applications => {
         this.applications = applications;
@@ -144,16 +156,25 @@ export class LoanReviewListComponent implements OnInit {
     }
   }
 
-  getStatusClass(status: string): string {
+  getStatusClass(status: string | undefined): string {
     const statusClasses: { [key: string]: string } = {
       'DRAFT': 'bg-secondary',
       'SUBMITTED': 'bg-primary',
       'UNDER_REVIEW': 'bg-warning',
+      'PENDING': 'bg-warning',
       'PENDING_DOCUMENTS': 'bg-info',
+      'FURTHER_REVIEW': 'big-info',
       'APPROVED': 'bg-success',
-      'REJECTED': 'bg-danger'
+      'APPROVE': 'bg-success',
+      'VERIFIED': 'bg-success',
+      'REJECTED': 'bg-danger',
+      'REJECT': 'bg-danger',
+      'UNVERIFIED': 'bg-danger',
+      'LOW': 'bg-secondary',
+      'MEDIUM': 'bg-primary',
+      'HIGH': 'bg-warning'
     };
-    return statusClasses[status] || 'bg-secondary';
+    return status ? statusClasses[status] || 'bg-secondary' : 'bg-secondary';
   }
 
   private getUserRoleFromLocalStorage(): UserRole {

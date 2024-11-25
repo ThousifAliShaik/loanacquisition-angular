@@ -186,8 +186,10 @@ export class LoanFinalReviewComponent implements OnInit {
         if (application) {
           this.application = application;
           console.log(application);
+          if(application.loanApplication.finalApprovalStatus!=='PENDING') {
+            this.router.navigate(['/applications']);  
+          }
         } else {
-            
           this.router.navigate(['/applications']);
         }
       },
@@ -263,8 +265,10 @@ export class LoanFinalReviewComponent implements OnInit {
       'PENDING_DOCUMENTS': 'bg-info',
       'FURTHER_REVIEW': 'big-info',
       'APPROVED': 'bg-success',
+      'APPROVE': 'bg-success',
       'VERIFIED': 'bg-success',
       'REJECTED': 'bg-danger',
+      'REJECT': 'bg-danger',
       'UNVERIFIED': 'bg-danger',
       'LOW': 'bg-secondary',
       'MEDIUM': 'bg-primary',

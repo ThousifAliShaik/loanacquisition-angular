@@ -153,4 +153,13 @@ export class LoanService implements OnInit{
   getApplicationsForPendingAssessment(): Observable<LoanApplicationDTO[]> {
     return this.http.get<LoanApplicationDTO[]>(`${this.loanApplicationBaseUrl}/pending_assessment`);
   }
+
+  getApplicationsForPendingManagerAssessment(): Observable<LoanApplicationDTO[]> {
+    return this.http.get<LoanApplicationDTO[]>(`${this.loanApplicationBaseUrl}/pending_manager_approval`);
+  }
+
+  getApplicationsForPendingSeniorManagerAssessment(): Observable<LoanApplicationDTO[]> {
+    return this.http.get<LoanApplicationDTO[]>(`${this.loanApplicationBaseUrl}/pending_senior_manager_approval`);
+  }
+
 }

@@ -37,53 +37,70 @@ import { ManagerService } from '../../services/manager.service';
             </div>
           </div>
 
+          <!-- Underwriter Assessment Section -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5>Underwriter Assessment</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Loan to Value Ratio:</strong> {{ application.underwriterAssessment?.loanToValueRatio || 'N/A' }}</p>
+              <p><strong>Income Verification:</strong>
+                <span [class]="'badge ' + getStatusClass(application.underwriterAssessment?.incomeVerificationStatus)">
+                  {{ application.underwriterAssessment?.incomeVerificationStatus || 'N/A' }}
+                </span>
+              </p>
+              <p><strong>Outcome:</strong>
+                <span [class]="'badge ' + getStatusClass(application.underwriterAssessment?.assessmentOutcome)">
+                  {{ application.underwriterAssessment?.assessmentOutcome || 'N/A' }}
+                </span>
+              </p>
+              <p><strong>Remarks:</strong> {{ application.underwriterAssessment?.remarks || 'N/A' }}</p>
+              <p><strong>Assessment Date:</strong> {{ application.underwriterAssessment?.assessmentDate | date:'short' }}</p>
+            </div>
+          </div>
+
+          <!-- Risk Assessment Section -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5>Risk Assessment</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Debt to Income Ratio:</strong> {{ application.riskAssessment?.debtToIncomeRatio || 'N/A' }}</p>
+              <p><strong>Credit Score:</strong> {{ application.riskAssessment?.creditScore || 'N/A' }}</p>
+              <p><strong>Risk Category:</strong>
+                <span [class]="'badge ' + getStatusClass(application.riskAssessment?.riskCategory)">
+                  {{ application.riskAssessment?.riskCategory || 'N/A' }}
+                </span>
+              </p>
+              <p><strong>Remarks:</strong> {{ application.riskAssessment?.remarks || 'N/A' }}</p>
+              <p><strong>Assessment Date:</strong> {{ application.riskAssessment?.assessmentDate | date:'short' || 'N/A' }}</p>
+            </div>
+          </div>
+
+          <!-- Compliance Assessment Section -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5>Compliance Assessment</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Compliance Status:</strong>
+                <span [class]="'badge ' + getStatusClass(application.complianceAssessment?.complianceStatus)">
+                  {{ application.complianceAssessment?.complianceStatus || 'N/A' }}
+                </span>
+              </p>
+              <p><strong>Remarks:</strong> {{ application.complianceAssessment?.remarks || 'N/A' }}</p>
+              <p><strong>Assessment Date:</strong> {{ application.complianceAssessment?.assessmentDate | date:'short' }}</p>
+            </div>
+          </div>
+
           <!-- Conditional rendering: Display either the form or the read-only assessment details -->
           <div *ngIf="!assessmentSubmitted">
             <!-- Underwriter Review Fields (Editable form) -->
             <div class="card mb-3">
               <div class="card-header">
-                <h5>Underwriter Review</h5>
+                <h5>Manager Review</h5>
               </div>
               <div class="card-body">
-                
-                <!-- Loan to Value Ratio -->
-                <div class="form-group">
-                  <label for="loanToValueRatio">Loan to Value Ratio</label>
-                  <input 
-                    type="number" 
-                    id="loanToValueRatio" 
-                    class="form-control" 
-                    [(ngModel)]="reviewData.loanToValueRatio" 
-                    placeholder="Enter Loan to Value Ratio" 
-                    min="0.0" 
-                    max="1.0" 
-                    step="0.01"
-                  />
-                </div>
-
-                <!-- Income Verification Status -->
-                <div class="form-group">
-                  <label for="incomeVerificationStatus">Income Verification Status</label>
-                  <select 
-                    id="incomeVerificationStatus" 
-                    class="form-control" 
-                    [(ngModel)]="reviewData.incomeVerificationStatus"
-                  >
-                    <option *ngFor="let status of incomeVerificationStatuses" [value]="status">{{ status }}</option>
-                  </select>
-                </div>
-
-                <!-- Assessment Outcome -->
-                <div class="form-group">
-                  <label for="assessmentOutcome">Assessment Outcome</label>
-                  <select 
-                    id="assessmentOutcome" 
-                    class="form-control" 
-                    [(ngModel)]="reviewData.assessmentOutcome"
-                  >
-                    <option *ngFor="let outcome of assessmentOutcomes" [value]="outcome">{{ outcome }}</option>
-                  </select>
-                </div>
 
                 <!-- Remarks -->
                 <div class="form-group">
@@ -96,14 +113,22 @@ import { ManagerService } from '../../services/manager.service';
                   ></textarea>
                 </div>
 
-                <!-- Submit Button -->
-                <div class="text-center mt-4">
-                  <button class="btn btn-primary" (click)="submitReview()">Submit Review</button>
+                <div *ngIf="!assessmentSubmitted" class="text-center mt-4">
+                  <!-- Approve Button -->
+                  <button class="btn btn-success me-3" (click)="approveLoan()">
+                      Approve
+                  </button>
+                  
+                  <!-- Reject Button -->
+                  <button class="btn btn-danger" (click)="rejectLoan()">
+                      Reject
+                  </button>
                 </div>
 
               </div>
             </div>
           </div>
+
           <div *ngIf="notificationMessage" 
               [ngClass]="{
                 'notification-popup': true,
@@ -118,77 +143,24 @@ import { ManagerService } from '../../services/manager.service';
             <!-- Read-only Assessment Details (After Submission) -->
             <div class="card mb-3">
               <div class="card-header">
-                <h5>Underwriter Assessment Details</h5>
+                <h5>Manager Assessment Details</h5>
               </div>
               <div class="card-body">
-                
-                <!-- Loan to Value Ratio -->
-                <div class="form-group">
-                  <label for="loanToValueRatio">Loan to Value Ratio</label>
-                  <input 
-                    type="text" 
-                    id="loanToValueRatio" 
-                    class="form-control" 
-                    [value]="assessmentDetails.loanToValueRatio" 
-                    readonly
-                  />
-                </div>
-
-                <!-- Income Verification Status -->
-                <div class="form-group">
-                  <label for="incomeVerificationStatus">Income Verification Status</label>
-                  <input 
-                    type="text" 
-                    id="incomeVerificationStatus" 
-                    class="form-control" 
-                    [value]="assessmentDetails.incomeVerificationStatus" 
-                    readonly
-                  />
-                </div>
-
-                <!-- Assessment Outcome -->
-                <div class="form-group">
-                  <label for="assessmentOutcome">Assessment Outcome</label>
-                  <input 
-                    type="text" 
-                    id="assessmentOutcome" 
-                    class="form-control" 
-                    [value]="assessmentDetails.assessmentOutcome" 
-                    readonly
-                  />
-                </div>
-
-                <!-- Remarks -->
-                <div class="form-group">
-                  <label for="remarks">Remarks</label>
-                  <textarea 
-                    id="remarks" 
-                    class="form-control" 
-                    [value]="assessmentDetails.remarks" 
-                    readonly
-                  ></textarea>
-                </div>
-
-                <!-- Assessment Date -->
-                <div class="form-group">
-                  <label for="assessmentDate">Assessment Date</label>
-                  <input 
-                    type="text" 
-                    id="assessmentDate" 
-                    class="form-control" 
-                    [value]="assessmentDetails.assessmentDate" 
-                    readonly
-                  />
-                </div>
-                
-                <!-- Back Button -->
-                <div class="text-center mt-4">
-                  <button class="btn btn-secondary" (click)="goBack()">Back to List</button>
-                </div>
+                <p><strong>Approval Status:</strong>
+                  <span [class]="'badge ' + getStatusClass(reviewData.approvalStatus)">
+                    {{ reviewData.approvalStatus || 'N/A' }}
+                  </span>
+                </p>
+                <p><strong>Remarks:</strong> {{ assessmentDetails.remarks || 'N/A' }}</p>
+                <p><strong>Assessment Date:</strong> {{ assessmentDetails.approvalDate | date:'short' }}</p>
               </div>
             </div>
           </div>
-          
+          <div class="text-center mt-4">
+            <button class="btn btn-secondary" (click)="goBack()">
+              Back to List
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -297,6 +269,11 @@ export class LoanManagerAssessmentComponent implements OnInit, OnDestroy {
       next: (application) => {
         if (application) {
           this.application = application;
+          this.application?.loanApprovals.forEach(approval => {
+            if (approval.approverRoleName === 'MANAGER' && approval.approvalStatus !== 'PENDING') {
+              this.router.navigate(['review/applications']);
+            }
+          });
           console.log(application);
         } else {
           this.router.navigate(['/applications']);
@@ -319,8 +296,10 @@ export class LoanManagerAssessmentComponent implements OnInit, OnDestroy {
       'PENDING_DOCUMENTS': 'bg-info',
       'FURTHER_REVIEW': 'big-info',
       'APPROVED': 'bg-success',
+      'APPROVE': 'bg-success',
       'VERIFIED': 'bg-success',
       'REJECTED': 'bg-danger',
+      'REJECT': 'bg-danger',
       'UNVERIFIED': 'bg-danger',
       'LOW': 'bg-secondary',
       'MEDIUM': 'bg-primary',
@@ -329,15 +308,35 @@ export class LoanManagerAssessmentComponent implements OnInit, OnDestroy {
     return status ? statusClasses[status] || 'bg-secondary' : 'bg-secondary';
   }
 
+  rejectLoan() {
+    this.reviewData.approvalStatus= 'REJECTED';
+    this.application?.loanApprovals.forEach(approval => {
+      if (approval.approverRoleName === 'MANAGER') {
+        this.reviewData.approvalId = approval.approvalId;
+      }
+    });
+    this.submitReview();
+  }
+
+  approveLoan() {
+    this.reviewData.approvalStatus= 'APPROVED';
+    this.application?.loanApprovals.forEach(approval => {
+      if (approval.approverRoleName === 'MANAGER') {
+        console.log(approval.approvalId);
+        this.reviewData.approvalId = approval.approvalId;
+      }
+    });
+    this.submitReview();
+  }
   submitReview() {
     const reviewPayload: LoanApprovalDTO = {
-      approvalId: '',
+      approvalId: this.reviewData.approvalId,
       approverId: '',
       loanId: this.reviewData.loanId,
       approverName: '',
       approverRoleName: '',
       approvalLevel: 0,
-      approvalStatus: '',
+      approvalStatus: this.reviewData.approvalStatus,
       remarks: this.reviewData.remarks,
       approvalDate: new Date().toISOString(),
       SLA: ''

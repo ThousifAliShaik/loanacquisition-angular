@@ -241,6 +241,9 @@ export class LoanComplianceOfficerAssessmentComponent implements OnInit, OnDestr
         if (application) {
           this.application = application;
           console.log(application);
+          if(application.complianceAssessment!=null) {
+            this.router.navigate(['review/applications']);  
+          }
         } else {
           this.router.navigate(['/applications']);
         }
@@ -262,8 +265,10 @@ export class LoanComplianceOfficerAssessmentComponent implements OnInit, OnDestr
       'PENDING_DOCUMENTS': 'bg-info',
       'FURTHER_REVIEW': 'big-info',
       'APPROVED': 'bg-success',
+      'APPROVE': 'bg-success',
       'VERIFIED': 'bg-success',
       'REJECTED': 'bg-danger',
+      'REJECT': 'bg-danger',
       'UNVERIFIED': 'bg-danger',
       'LOW': 'bg-secondary',
       'MEDIUM': 'bg-primary',

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoanService } from '../../services/loan.service';
 import { LoanApplicationExtendedDTO } from '../../../../core/models/loan-application.model';
+import { UserRole } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-loan-detail',
@@ -113,8 +114,17 @@ import { LoanApplicationExtendedDTO } from '../../../../core/models/loan-applica
             </div>
           </div>
 
+          <div *ngIf="(getUserRoleFromLocalStorage() === 'MANAGER' || getUserRoleFromLocalStorage() === 'SENIOR_MANAGER'
+            || getUserRoleFromLocalStorage() === 'LOAN_OFFICER')
+            && (application.loanApplication.applicationStatus !== 'PENDING')" 
+            class="text-center mt-4">
+            <button class="btn btn-primary" (click)="generateReport(application.loanApplication?.loanId || '')">
+              Generate Report
+            </button>
+          </div>
+
           <div class="text-center mt-4">
-            <button class="btn btn-primary" (click)="goBack()">
+            <button class="btn btn-secondary" (click)="goBack()">
               Back to List
             </button>
           </div>
@@ -170,8 +180,10 @@ export class LoanDetailComponent implements OnInit {
       'PENDING_DOCUMENTS': 'bg-info',
       'FURTHER_REVIEW': 'big-info',
       'APPROVED': 'bg-success',
+      'APPROVE': 'bg-success',
       'VERIFIED': 'bg-success',
       'REJECTED': 'bg-danger',
+      'REJECT': 'bg-danger',
       'UNVERIFIED': 'bg-danger',
       'LOW': 'bg-secondary',
       'MEDIUM': 'bg-primary',
@@ -180,4 +192,36 @@ export class LoanDetailComponent implements OnInit {
     return status ? statusClasses[status] || 'bg-secondary' : 'bg-secondary';
   }
   
+  getUserRoleFromLocalStorage(): UserRole {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+      const user = JSON.parse(currentUser);
+      return user.role;
+    }
+    return UserRole.LOAN_OFFICER;
+  }
+  
+  generateReport(loanId: string) {
+    if (loanId) {
+        this.loanService.generateLoanReport(loanId).subscribe({
+          next: (response) => {
+            
+            const blob = new Blob([response], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Loan_Acquisition_Report_${loanId}.pdf`; 
+            a.click();  
+            
+            window.URL.revokeObjectURL(url);
+          },
+          error: (error) => {
+            console.error('Error downloading report:', error);
+            alert('Error generating loan acquisition report');
+          }
+        });
+      }
+  }
 }

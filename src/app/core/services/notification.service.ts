@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 export interface NotificationDTO {
   notificationId: string;
   message: string;
+  loanId: string;
   notificationType: 'LOAN_APPLICATION_UPDATE' | 'RISK_ASSESSMENT' | 'APPROVAL_STATUS' | 'DOCUMENT_SUBMISSION' | 'GENERAL';
   isRead: boolean;
   createdAt: Date;
@@ -22,16 +23,7 @@ export class NotificationService {
   private unreadCount = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient) {
-    
-    // Mock initial NotificationDTOs
-    this.addNotification({
-      notificationId: '12',
-      message: 'New loan application requires review',
-      notificationType: 'LOAN_APPLICATION_UPDATE',
-      createdAt: new Date(),
-      isRead: false,
-      link: '/applications/LOAN001/review'
-    });
+
   }
 
   getNotifications(): Observable<NotificationDTO[]> {
@@ -39,7 +31,7 @@ export class NotificationService {
   }
 
   getUnreadCount(): Observable<number> {
-    return this.unreadCount;
+    return this.http.get<number>(`${this.baseUrl}/unread_notifications_count`);
   }
 
   addNotification(NotificationDTO: Omit<NotificationDTO, 'id'>) {
@@ -62,12 +54,16 @@ export class NotificationService {
   }
 
   markAllAsRead() {
-    const updated = this.notifications.value.map(notification => ({
-      ...notification,
-      read: true
-    }));
-    this.notifications.next(updated);
-    this.updateUnreadCount();
+    console.log('Reached here !!')
+    const body = {};
+    this.http.put(`${this.baseUrl}/mark_notifications_read`, body).subscribe(
+      (response) => {
+        console.log('Notifications marked as read:', response);
+      },
+      (error) => {
+        console.error('Error marking notifications as read:', error);
+      }
+    );
   }
 
   private updateUnreadCount() {

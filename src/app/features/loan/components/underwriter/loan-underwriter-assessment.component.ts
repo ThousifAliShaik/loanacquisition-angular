@@ -291,6 +291,9 @@ export class LoanUnderwriterAssessmentComponent implements OnInit, OnDestroy {
         if (application) {
           this.application = application;
           console.log(application);
+          if(application.underwriterAssessment!=null) {
+            this.router.navigate(['review/applications']);  
+          }
         } else {
           this.router.navigate(['/applications']);
         }
@@ -312,8 +315,10 @@ export class LoanUnderwriterAssessmentComponent implements OnInit, OnDestroy {
       'PENDING_DOCUMENTS': 'bg-info',
       'FURTHER_REVIEW': 'big-info',
       'APPROVED': 'bg-success',
+      'APPROVE': 'bg-success',
       'VERIFIED': 'bg-success',
       'REJECTED': 'bg-danger',
+      'REJECT': 'bg-danger',
       'UNVERIFIED': 'bg-danger',
       'LOW': 'bg-secondary',
       'MEDIUM': 'bg-primary',
