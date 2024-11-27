@@ -37,6 +37,41 @@ import { ManagerService } from '../../services/manager.service';
             </div>
           </div>
 
+          <!-- Loan Lender Details -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5>Lender Information</h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Lender Name:</strong> {{ application.lenderDetails.lenderName }}</p>
+              <p><strong>Registration Number:</strong> {{ application.lenderDetails.registrationNumber }}</p>
+              <p><strong>Lender Type:</strong> {{ application.lenderDetails.lenderType }}</p>
+              <p><strong>Risk Score:</strong> {{ application.lenderDetails.riskScore }}</p>
+            </div>
+          </div>
+
+          <!-- Documents Section -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <h5>Loan Documents</h5>
+            </div>
+            <div class="card-body">
+              <div *ngFor="let document of application.loanApplication.loanDocuments">
+                <p>
+                  <strong *ngIf="document.documentType === 'LOAN_REQUEST'">Loan Application Form:</strong>
+                  <strong *ngIf="document.documentType === 'LOAN_AGREEMENT'">Loan Agreement Document:</strong>
+                  <strong *ngIf="document.documentType === 'INCOME_VERIFICATION'">Income Verification Document:</strong>
+                  <strong *ngIf="document.documentType === 'COMPLIANCE_REGULATORY'">Compliance & Regulatory Document:</strong>
+                  <strong *ngIf="document.documentType === 'COLLATERAL'">Collateral Document:</strong> 
+                  <i *ngIf="document.documentName.endsWith('.pdf')" class="fa fa-file-pdf"></i>
+                  <a [href]="getFileDownloadLink(document)" download="{{document.documentName}}">
+                    {{ document.documentName }}
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Underwriter Assessment Section -->
           <div class="card mb-3">
             <div class="card-header">
@@ -328,6 +363,7 @@ export class LoanManagerAssessmentComponent implements OnInit, OnDestroy {
     });
     this.submitReview();
   }
+
   submitReview() {
     const reviewPayload: LoanApprovalDTO = {
       approvalId: this.reviewData.approvalId,
@@ -365,5 +401,12 @@ export class LoanManagerAssessmentComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.notificationMessage = null;
     }, 3000);
+  }
+
+  getFileDownloadLink(document: any): string {
+    if (document.fileContent !== '') {
+      return 'data:application/pdf;base64,'+ document.fileContent;
+    }
+    return '';
   }
 }

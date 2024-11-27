@@ -32,6 +32,16 @@ export interface LoanApplicationDTO {
   complianceOfficerId: string;
   managerId: string;
   seniorManagerId: string;
+  loanDocuments: LoanDocumentDTO[];
+}
+
+export interface LoanDocumentDTO {
+  documentId?: string;
+  loanId?: string;
+  documentName: string;
+  documentType: string;
+  fileContent: Uint8Array;
+  uploadedAt: string;
 }
 
 export interface LoanApprovalDTO {
@@ -77,10 +87,24 @@ export interface ComplianceAssessmentDTO {
 
 export interface LoanApplicationExtendedDTO {
   loanApplication: LoanApplicationDTO;
+  lenderDetails: LenderDTO;
   loanApprovals: LoanApprovalDTO[];
   underwriterAssessment: UnderwriterAssessmentDTO;
   riskAssessment: RiskAssessmentDTO;
   complianceAssessment: ComplianceAssessmentDTO;
+}
+
+export interface LenderDTO {
+  lenderId: string,
+  lenderName: string,
+  lenderType: string,
+  registrationNumber: string,
+  dateJoined: Date,
+  isActive: boolean,
+  riskScore: number,
+  email: string,
+  address: string,
+  webisteUrl: string
 }
 
 export interface Document {

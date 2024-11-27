@@ -66,24 +66,29 @@ export class LoanService implements OnInit{
     return of(this.mockApplications.find(app => app.id === id));
   }
 
-  createApplication(application: Partial<LoanApplicationDTO>): Observable<LoanApplicationDTO> {
-    const newApplication: LoanApplicationDTO = {
-      lenderId: application.lenderId || '',
-      loanAmount: application.loanAmount || '',
-      loanType: application.loanType || '',
-      riskLevel: application.riskLevel ? application.riskLevel.toUpperCase() : '',
-      isActive: application.isActive || false,
-      underwriterId: application.underwriterId || '',
-      riskAnalystId: application.riskAnalystId || '',
-      complianceOfficerId: application.complianceOfficerId || '',
-      managerId: application.managerId || '',
-      seniorManagerId: application.seniorManagerId || ''
-    };
+  // createApplication(application: Partial<LoanApplicationDTO>): Observable<LoanApplicationDTO> {
+  //   const newApplication: LoanApplicationDTO = {
+  //     lenderId: application.lenderId || '',
+  //     loanAmount: application.loanAmount || '',
+  //     loanType: application.loanType || '',
+  //     riskLevel: application.riskLevel ? application.riskLevel.toUpperCase() : '',
+  //     isActive: application.isActive || false,
+  //     underwriterId: application.underwriterId || '',
+  //     riskAnalystId: application.riskAnalystId || '',
+  //     complianceOfficerId: application.complianceOfficerId || '',
+  //     managerId: application.managerId || '',
+  //     seniorManagerId: application.seniorManagerId || '',
+  //     loanDocuments: application.loanDocuments || []
+  //   };
     
-    return this.http.post<LoanApplicationDTO>(`${this.loanOfficerBaseUrl}/new_application`, newApplication);
+  //   return this.http.post<LoanApplicationDTO>(`${this.loanOfficerBaseUrl}/new_application`, newApplication);
+  // }
+
+  createApplication(formData: FormData): Observable<any> {
+    return this.http.post(`${this.loanOfficerBaseUrl}/new_application`, formData);
   }
   
-  editLoanApplication(application: LoanApplicationDTO): Observable<ApiResponse> {
+  editLoanApplication(application: FormData): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(`${this.loanOfficerBaseUrl}/edit_application`, application);
   }
 
